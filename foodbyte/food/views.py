@@ -385,7 +385,10 @@ class DisplayFooditems(APIView):
             Rname = Data['Rname']
             Radmin = Data['Radmin']
             Remail = Person.objects.filter(id = Radmin).first()
-            RestD.append([Rname, Remail.email])
+            RestD.append({
+                "Rname" : Rname,
+                "email":Remail.email
+            })
 
             
         return Response({
@@ -519,7 +522,7 @@ class DisplayUserOrder(APIView) :
         if OrderItems.exists() :
 
             MainData = []
-            
+
             for Orders in OrderItems:
                 fooditem = Orders.fooditem.id
                 fooditemData = FoodItem.objects.filter(id = fooditem).first()
@@ -549,6 +552,34 @@ class DisplayUserOrder(APIView) :
             return Response({
                 'failed':'order does not exist for this person'
             }, status = status.HTTP_404_NOT_FOUND)
+        
+
+class OrderOverview(APIView):
+    def get(self, request, item_name) :
+        fooditem = FoodItem.objects.filter(item_name = item_name).first()
+        Res = Restaurent.objects.filter(Fooditems = fooditem ).first()
+
+        Tfooditems = FoodItem.objects.all()
+
+        count = 0
+
+        for i in Tfooditems:
+            count += 1
+
+        Tdata = []
+
+        for i in range(0,5) :
+            index = random.randint(0,count-1)
+            Tdata.append({
+                'additems':foodserializer(Tfooditems[index]).data
+            })
+        
+        return Response({
+            'fooditem':foodserializer(fooditem).data,
+            'Res':RestaurentSerializer(Res).data,
+            'additems':Tdata
+        }, status = status.HTTP_200_OK)
+    
         
 
 

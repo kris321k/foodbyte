@@ -30,7 +30,8 @@ urlpatterns = [
     path('AddRes/<str:item_name>',views.AddtoRest.as_view()),
     path('Rest/',views.Rest.as_view()),
     path('displayItem/<str:item_name>/',views.DisplayFooditems.as_view()),
-    path('DisplayOrders/',views.DisplayUserOrder.as_view())
+    path('DisplayOrders/',views.DisplayUserOrder.as_view()),
+    path('OrderView/<str:item_name>/',views.OrderOverview.as_view())
 
     
 
