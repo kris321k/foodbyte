@@ -165,7 +165,10 @@ class review(APIView):
             review=Review.objects.filter(food_item=food_item)
             ReviewData = []
             for Data in review:
-                ReviewData.append([Data.review_text, Data.person.email])
+                ReviewData.append({
+                    'review_text':Data.review_text,
+                    'email':Data.person.email
+                })
             return Response({
                 'data':ReviewData
             })
@@ -377,25 +380,8 @@ class DisplayFooditems(APIView):
         Res = Restaurent.objects.filter(Fooditems = fooditem)
         if Res.exists() :
             ResSerializedData = RestaurentSerializer(Res, many = True) 
-
-        fooditemserialized = foodserializer(fooditem)
-        RestD=[]
-
-        for Data in ResSerializedData.data :
-            Rname = Data['Rname']
-            Radmin = Data['Radmin']
-            Remail = Person.objects.filter(id = Radmin).first()
-            RestD.append({
-                "Rname" : Rname,
-                "email":Remail.email
-            })
-
-            
         return Response({
-            'success':True,
-            'itemData':fooditemserialized.data,
             'Restaurents':ResSerializedData.data,
-            'data':RestD
             },status=status.HTTP_200_OK)
 
  
